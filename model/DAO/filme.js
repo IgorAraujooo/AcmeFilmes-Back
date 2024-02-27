@@ -6,58 +6,114 @@
 ***********************************************************************************************************************************/
 
 // Import da biblioteca do prisma client
-const { PrismaClient } = require ('@prisma/client')
+const { PrismaClient } = require('@prisma/client')
 
 // Instanciando o objeto prisa com as características do prisma client
 const prisma = new PrismaClient()
 
 // Inserir um novo filme
-const insertFilme = async function(){
+const insertFilme = async function (dadosFilme) {
+    try {
+        let sql
+        if (dadosFilme.data_relancamento == null || dadosFilme.data_relancamento == '' || dadosFilme.data_relancamento == undefined) {
+             // ScriptSQL para inserir no banco de dados
+        sql = `insert into tbl_filme (
+            nome,
+             sinopse, 
+             data_lancamento, 
+             data_relancamento, 
+             duracao, 
+             foto_capa,
+              valor_unitario) values (
 
+                '${dadosFilme.nome}',
+                '${dadosFilme.sinopse}',
+                '${dadosFilme.data_lancamento}',
+                null,
+                '${dadosFilme.data_duracao}',
+                '${dadosFilme.foto_capa}',
+                '${dadosFilme.valor_unitario}'
+              )`
+
+        } else{
+             // ScriptSQL para inserir no banco de dados
+         sql = `insert into tbl_filme (
+            nome,
+             sinopse, 
+             data_lancamento, 
+             data_relancamento, 
+             duracao, 
+             foto_capa,
+              valor_unitario) values (
+
+                '${dadosFilme.nome}',
+                '${dadosFilme.sinopse}',
+                '${dadosFilme.data_lancamento}',
+                '${dadosFilme.data_relancamento}',
+                '${dadosFilme.data_duracao}',
+                '${dadosFilme.foto_capa}',
+                '${dadosFilme.valor_unitario}'
+              )`
+
+        }
+       
+        // Executa o scriptSQL no banco de dados (devemos usar o comando execute e não o querry)
+        // O comando execute deve ser utilizado para insert, update e delete 
+        let result = await prisma.$executeRawUnsafe(sql)
+
+        // Validação para verificar se o insert funcionou no banco de dados 
+        if (result)
+            return true
+        else
+            return false
+
+    } catch (error) {
+        return false 
+    }
 }
 
 // Atualizar um Filme existente filtrando pelo ID
-const updateFilme = async function(id){
+const updateFilme = async function (id) {
 
 }
 
 // Excluir um Filme existente filtrando pelo ID
-const deleteFilme = async function(id){
+const deleteFilme = async function (id) {
 
 }
 
 // Listar todos os filmes existentes 
-const selectAllFilmes = async function(){
-    
+const selectAllFilmes = async function () {
+
     // Script SQL para listar todos os registros
     let sql = 'select * from tbl_filme'
- 
+
     // Executa o scriptSQL no BD e recebe o retorno dos daods na variável rsFilmes
     let rsFilmes = await prisma.$queryRawUnsafe(sql)
 
     // Tratamento de erro para retornar os dados ou retornar false
     if (rsFilmes.length > 0)
         return rsFilmes
-    else 
+    else
         return false
 
 }
 
 // Buscar o filme existente filtrando pelo ID
-const selectByIdFilme = async function(id){
-        try {
-            // Realiza a busca do Filme pelo ID
-            let sql = `select * from tbl_filme where id = ${id}`;
-    
-            // Executa no Banco de Dados o script SQL
-            let rsFilme = await prisma.$queryRawUnsafe(sql);
-    
-            return rsFilme;
-        } catch (error) {
-       
-        }
-    };
-    
+const selectByIdFilme = async function (id) {
+    try {
+        // Realiza a busca do Filme pelo ID
+        let sql = `select * from tbl_filme where id = ${id}`;
+
+        // Executa no Banco de Dados o script SQL
+        let rsFilme = await prisma.$queryRawUnsafe(sql);
+
+        return rsFilme;
+    } catch (error) {
+
+    }
+};
+
 
 
 module.exports = {
