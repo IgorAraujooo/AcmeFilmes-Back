@@ -92,8 +92,11 @@ app.post('/v2/acmefilmes/filme', cors(), bodyParserJSON, async function (request
     // Encaminha os dados da requisição para o controller enviar para o BD 
     let resultDados = await controllerFilmes.setInserirNovoFilme(dadosBody)
 
+console.log(resultDados)
+
     response.status(resultDados.status_code)
     response.json(resultDados)
+
 
 })
 

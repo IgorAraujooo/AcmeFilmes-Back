@@ -14,10 +14,13 @@ const prisma = new PrismaClient()
 // Inserir um novo filme
 const insertFilme = async function (dadosFilme) {
     try {
+
+        console.log(dadosFilme)
         let sql
+
         if (dadosFilme.data_relancamento == null || dadosFilme.data_relancamento == '' || dadosFilme.data_relancamento == undefined) {
-             // ScriptSQL para inserir no banco de dados
-        sql = `insert into tbl_filme (
+            // ScriptSQL para inserir no banco de dados
+            sql = `insert into tbl_filme (
             nome,
              sinopse, 
              data_lancamento, 
@@ -30,14 +33,14 @@ const insertFilme = async function (dadosFilme) {
                 '${dadosFilme.sinopse}',
                 '${dadosFilme.data_lancamento}',
                 null,
-                '${dadosFilme.data_duracao}',
+                '${dadosFilme.duracao}',
                 '${dadosFilme.foto_capa}',
                 '${dadosFilme.valor_unitario}'
               )`
 
-        } else{
-             // ScriptSQL para inserir no banco de dados
-         sql = `insert into tbl_filme (
+        } else {
+            // ScriptSQL para inserir no banco de dados
+            sql = `insert into tbl_filme (
             nome,
              sinopse, 
              data_lancamento, 
@@ -56,7 +59,9 @@ const insertFilme = async function (dadosFilme) {
               )`
 
         }
-       
+
+        console.log(sql)
+
         // Executa o scriptSQL no banco de dados (devemos usar o comando execute e não o querry)
         // O comando execute deve ser utilizado para insert, update e delete 
         let result = await prisma.$executeRawUnsafe(sql)
@@ -68,7 +73,7 @@ const insertFilme = async function (dadosFilme) {
             return false
 
     } catch (error) {
-        return false 
+        return false
     }
 }
 
@@ -86,7 +91,7 @@ const deleteFilme = async function (id) {
 const selectAllFilmes = async function () {
 
     // Script SQL para listar todos os registros
-    let sql = 'select * from tbl_filme'
+    let sql = 'select * from tbl_filme order by id desc'
 
     // Executa o scriptSQL no BD e recebe o retorno dos daods na variável rsFilmes
     let rsFilmes = await prisma.$queryRawUnsafe(sql)
