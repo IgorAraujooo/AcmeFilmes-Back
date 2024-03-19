@@ -1,7 +1,6 @@
-
 /**********************************************************************************************************************************
 * Objetivo: Arquivo para realizar as requisições                                                                                  *
-* Data: 30/01/24                                                                                                                  *
+* Data: 19/03/2024                                                                                                                *
 * Autor: Igor Araujo                                                                                                              *
 * Versão: 1.0                                                                                                                     * 
 ***********************************************************************************************************************************/
@@ -15,11 +14,9 @@
  * - Prisma
  *      npm install prisma --save
  *      npm install @prisma/client --save
- * 
  *      Após a instalação do prisma, devemos rodar o comando abaixo para incializar o prisma
  *      npx prisma init
  **************************************************************************************************/
-//app importa funcoes
 
 
 const express = require('express')
@@ -51,15 +48,12 @@ const bodyParserJson = bodyParser.json();
 
 
 //EndPoint : Versão 2.0 - retorna todos os filmes do Banco de Dados 
-
 app.get('/v2/acmefilmes/filmes', cors(),async function (request,response,next){
 
     // chama a função da controller para retornar os filmes;
-
     let dadosFilmes = await controllerFilmes.getListarFilmes();
 
     // validação para retornar o Json dos filmes ou retornar o erro 404;
-
     if(dadosFilmes){
         response.json(dadosFilmes);
         response.status(200);
@@ -92,16 +86,16 @@ app.get('/v2/acmefilmes/filme/:id', cors(), async function(request,response,next
 })
 
 
+// primeiro end point usando POST 
+app.post('/v2/acmefilmes/filme', cors(), bodyParserJson, async function (request, response,next ){
 
-app.post('/v2/acmefilmes/filme', cors(), bodyParserJson, async function (request, response, next ){
-
-
+// Api reebe o content-tye (API DEVE RECEBER SOMENTE application/json)
     let contentType = request.headers['content-type'];
     
 
-   
+    // recebe o que chegar no corpo da requisição e guardar nessa variável local
     let dadosBody = request.body;
-
+    // encaminha os dados para a controller enviar para o DAO
     let resultDadosNovoFilme = await controllerFilmes.setInserirNovoFilme(dadosBody, contentType);
 
 
@@ -110,10 +104,16 @@ app.post('/v2/acmefilmes/filme', cors(), bodyParserJson, async function (request
 
 } )
 
-app.delete('/v2/acmefilmes/filme', cors(), bodyParserJson, async function (request, response, next){
+app.delete('/v1/acmefilmes/deleteFilme/:id', cors (), async function (request,response,next){
 
+    let idFilme = request.params.id
+
+    let dadosFilme = await controllerFilmes.setExcluirFilme(idFilme);
+
+    response.status(dadosFilme.status_code);
+    response.json(dadosFilme);
 })
 
 app.listen('8080', function(){
-    console.log('API FUNCIONANDO')
+    console.log('API funcionando e aguardando requisições')
 })

@@ -1,7 +1,7 @@
 /*********************************************************************************************************************
  * Objetivo: Arquivo responsável pelas configurações globais de mensagens, valores e conteudos para o projeto
- * Data: 20/02/2024
- * Autor: Igor Araujo    
+ * Data: 19/03/2024
+ * Autor: Igor Araujo   
  * Versão: 1.0
  *********************************************************************************************************************/
 
@@ -16,8 +16,8 @@ const ERROR_INTERNAL_SERVER = {status: false, status_code: 500, message: 'Ocorre
 /******************************* MENSAGENS DE SUCESSO****************************************/
 
 const SUCCESS_CREATED_ITEM = {status: true, status_code: 201, message: 'Item Inserido com sucesso!'}
-
-
+const SUCCESS_DELETED_ITEM = {status: true, status_code: 202, message: 'Item Deletado com sucesso!'}
+const SUCCESS_UPDATED_ITEM = {status:true, status_code: 200, message: 'Item Atualizado com Sucesso!' }
 
 
 module.exports = {
@@ -27,5 +27,7 @@ module.exports = {
     ERROR_REQUIRED_FIELDS,
     SUCCESS_CREATED_ITEM,
     ERROR_CONTENT_TYPE,
-    ERROR_INTERNAL_SERVER
+    ERROR_INTERNAL_SERVER,
+    SUCCESS_DELETED_ITEM,
+    SUCCESS_UPDATED_ITEM
 }

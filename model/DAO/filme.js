@@ -1,18 +1,14 @@
-// função que faz o import da biblioteca do prisma client para manipular scripts SQL
-
 const {PrismaClient} = require('@prisma/client');
-
-
-// Instancia d classe PrismaClient 
 
 const prisma = new PrismaClient();
 
-const insertFilme =  async function(dadosFilme) {
+const insertFilme = async function(dadosFilme) {
     
     try {
+
      let sql;
         if( dadosFilme.data_relancamento == null || 
-            dadosFilme.data_relancamento == ''   ||
+            dadosFilme.data_relancamento == '' ||
              dadosFilme.data_relancamento == undefined){
              // Script SQL para inserir no banco de dados
             sql = `insert into tbl_filme (
@@ -56,11 +52,9 @@ const insertFilme =  async function(dadosFilme) {
        
         // Executa o script SQL no banco de dados | Devemos usar execute e não query!
         // Execute deve ser utilizado para insert, update e delete, onde o banco não devolve dados
-
         let result = await prisma.$executeRawUnsafe(sql);
 
         // Validação para verificar se o insert funcionou no banco de dados
-
         if(result )
             return true;
         else
@@ -73,18 +67,28 @@ const insertFilme =  async function(dadosFilme) {
 }
 
 
-//funcao para atualizar um filme no banco de dados
-const updateFilme = async function(){
 
+const updateFilme = async function(id,dadosFilme){
 }
 
-//função para excluir um filme no banco de dodos
-const deleteFilme = async function (){
+const deleteFilme = async function (id){
+    try {
+        let sql = `DELETE FROM tbl_filme WHERE tbl_filme.id = ${id}`;
 
+        let rsFilme = await prisma.$queryRawUnsafe(sql);
+
+        return rsFilme
+
+    } catch (error) {
+        return false
+    }
 }
 
 const selectIdFilme = async function (){
+ 
+    
     try {
+
         let sql = `select CAST(last_insert_id() as DECIMAL) as id from tbl_filme limit 1`
     
         let filmeId = await prisma.$queryRawUnsafe(sql)
@@ -95,8 +99,9 @@ const selectIdFilme = async function (){
         }   
     }
     
-//função para listar todos os filmes do banco de dados
+
 const selectAllFilmes = async function(){
+
     try {
 
         let sql = 'select * from tbl_filme';
@@ -125,7 +130,7 @@ const selectByNome = async function (nome){
     
 }
 
-// função para buscar um filme no banco de dados filtrando pelo id 
+
 const selectByIdFilme = async function (id){
 
     try {
