@@ -1,3 +1,4 @@
+
 /**********************************************************************************************************************************
 * Objetivo: Arquivo para realizar as requisições                                                                                  *
 * Data: 30/01/24                                                                                                                  *
@@ -18,89 +19,101 @@
  *      Após a instalação do prisma, devemos rodar o comando abaixo para incializar o prisma
  *      npx prisma init
  **************************************************************************************************/
+//app importa funcoes
+
 
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 
-const app = express()
+const app = express();
 
-
-app.use((request, response, next) => {
-
-    response.header('Access-Control-Allow-Origin', '*')
-    response.header('Access-Control-Allow-Methods', 'GET, POST')
-    app.use(cors)
-
-    next()
-
-})
-
-// Cria um objeto do tipo JSON para receber os dados via body nas requisições POST ou PUT 
-const bodyParserJSON = bodyParser.json()
-
-/******************************** Imports de arquivos e bibliotecas do Projeto *********************************/
-
-    const controllerFilmes = require('./controller/controller_filme.js')
-
-/***************************************************************************************************************/
-
-//EndPoint: Retorna os dados do arquivo JSON
-app.get('/AcmeFilmes/filmes', async(request, response, next) => {
-
-    response.status(200)
-    response.json(functions.listarFilmes())
-})
-
-//EndPoint: Retorna os dados do Banco de Dados
-app.get('/v2/acmefilmes/filmes', cors(), async function(request, response, next){
+app.use((request,response,next) =>{
+    response.header('Acess-Control-Allow-Origin','*');
+    response.header('Acess-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    app.use(cors())
     
-    // Chama a função para retornar os dados do filme
-    let dadosFilmes = await controllerFilmes.getListarFilmes()
+    next();
+});
 
-    // Validação para verificar se existem dados
-    if (dadosFilmes){
-        response.status(200)
-        response.json(dadosFilmes)
-    } else {
-        response.status(404)
-        response.json({message: 'Nenhum registro encontrado'})
-        
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Import dos arquivos da controller do projeto 
+    const controllerFilmes = require ('./controller/controller_filme.js');
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// Criando um objeto para controlar a chegada dos dados da requisição em formato JSON 
+const bodyParserJson = bodyParser.json();
+
+
+
+//EndPoint : Versão 2.0 - retorna todos os filmes do Banco de Dados 
+
+app.get('/v2/acmefilmes/filmes', cors(),async function (request,response,next){
+
+    // chama a função da controller para retornar os filmes;
+
+    let dadosFilmes = await controllerFilmes.getListarFilmes();
+
+    // validação para retornar o Json dos filmes ou retornar o erro 404;
+
+    if(dadosFilmes){
+        response.json(dadosFilmes);
+        response.status(200);
+    }else{
+        response.json({message: 'Nenhum registro foi encontrado'});
+        response.status(404);
     }
+});
 
-})
+app.get('/v1/acmefilmes/filmeNome', cors(), async function(request,response,next){
 
-//EndPoint: Retorna os dados do filme filtrando pelo ID
-app.get('/v2/acmefilmes/filme/:id', cors(), async function(request, response, next){
-    // Recebe o ID da requisição do Filme
+    let nomeFilme = request.query.nome
+    let filmeNome = await controllerFilmes.getBuscarFilmeNome(nomeFilme)
+
+        response.json(filmeNome);
+        response.status(filmeNome.status_code)
+} )
+
+// endPoint: retorna o filme filtrano pelo ID
+app.get('/v2/acmefilmes/filme/:id', cors(), async function(request,response,next){
+
+    // recebe o id da requisição
     let idFilme = request.params.id
-    
-    // Solicita para a controller o Filme filtrando pelo ID
-    let dadosFilme = await controllerFilmes.getBuscarFilme(idFilme)
-    console.log(dadosFilme)
 
-    response.status(dadosFilme)
-    response.json(dadosFilme)
+    //encaminha o id para a acontroller buscar o filme
+    let dadosFilme = await controllerFilmes.getBuscarFilme(idFilme);
+
+    response.status(dadosFilme.status_code);
+    response.json(dadosFilme);
 })
 
-//EndPoint: Inserir novos filmes no BD 
-app.post('/v2/acmefilmes/filme', cors(), bodyParserJSON, async function (request, response, next){
+
+
+app.post('/v2/acmefilmes/filme', cors(), bodyParserJson, async function (request, response, next ){
+
+
+    let contentType = request.headers['content-type'];
     
-    // Recebe os dados encaminhados na requisição no body(JSON)
-    let dadosBody = request.body
 
-    // Encaminha os dados da requisição para o controller enviar para o BD 
-    let resultDados = await controllerFilmes.setInserirNovoFilme(dadosBody)
+   
+    let dadosBody = request.body;
 
-console.log(resultDados)
+    let resultDadosNovoFilme = await controllerFilmes.setInserirNovoFilme(dadosBody, contentType);
 
-    response.status(resultDados.status_code)
-    response.json(resultDados)
 
+    response.status(resultDadosNovoFilme.status_code);
+    response.json(resultDadosNovoFilme);
+
+} )
+
+app.delete('/v2/acmefilmes/filme', cors(), bodyParserJson, async function (request, response, next){
 
 })
-
 
 app.listen('8080', function(){
-    console.log('API funcionando!!!')
+    console.log('API FUNCIONANDO')
 })

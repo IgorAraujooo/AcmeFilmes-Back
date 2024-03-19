@@ -1,124 +1,146 @@
-/**********************************************************************************************************************************
-* Objetivo: Criar a intereação com o banco de dados MYSQL para fazer o CRUD de filmes                                             *
-* Data: 30/01/24                                                                                                                  *
-* Autor: Igor Araujo                                                                                                              *
-* Versão: 1.0                                                                                                                     * 
-***********************************************************************************************************************************/
+// função que faz o import da biblioteca do prisma client para manipular scripts SQL
 
-// Import da biblioteca do prisma client
-const { PrismaClient } = require('@prisma/client')
+const {PrismaClient} = require('@prisma/client');
 
-// Instanciando o objeto prisa com as características do prisma client
-const prisma = new PrismaClient()
 
-// Inserir um novo filme
-const insertFilme = async function (dadosFilme) {
+// Instancia d classe PrismaClient 
+
+const prisma = new PrismaClient();
+
+const insertFilme =  async function(dadosFilme) {
+    
     try {
-
-        console.log(dadosFilme)
-        let sql
-
-        if (dadosFilme.data_relancamento == null || dadosFilme.data_relancamento == '' || dadosFilme.data_relancamento == undefined) {
-            // ScriptSQL para inserir no banco de dados
+     let sql;
+        if( dadosFilme.data_relancamento == null || 
+            dadosFilme.data_relancamento == ''   ||
+             dadosFilme.data_relancamento == undefined){
+             // Script SQL para inserir no banco de dados
             sql = `insert into tbl_filme (
-            nome,
-             sinopse, 
-             data_lancamento, 
-             data_relancamento, 
-             duracao, 
-             foto_capa,
-              valor_unitario) values (
-
+                nome,
+                sinopse,
+                data_lancamento,
+                data_relancamento,
+                duracao,
+                foto_capa,
+                valor_unitario
+            ) values (
                 '${dadosFilme.nome}',
                 '${dadosFilme.sinopse}',
                 '${dadosFilme.data_lancamento}',
-                null,
+                 null,
                 '${dadosFilme.duracao}',
                 '${dadosFilme.foto_capa}',
                 '${dadosFilme.valor_unitario}'
-              )`
+            )`;
 
-        } else {
-            // ScriptSQL para inserir no banco de dados
+        }else{
+             // Script SQL para inserir no banco de dados
             sql = `insert into tbl_filme (
             nome,
-             sinopse, 
-             data_lancamento, 
-             data_relancamento, 
-             duracao, 
-             foto_capa,
-              valor_unitario) values (
-
-                '${dadosFilme.nome}',
-                '${dadosFilme.sinopse}',
-                '${dadosFilme.data_lancamento}',
-                '${dadosFilme.data_relancamento}',
-                '${dadosFilme.data_duracao}',
-                '${dadosFilme.foto_capa}',
-                '${dadosFilme.valor_unitario}'
-              )`
-
+            sinopse,
+            data_lancamento,
+            data_relancamento,
+            duracao,
+            foto_capa,
+            valor_unitario
+        ) values (
+            '${dadosFilme.nome}',
+            '${dadosFilme.sinopse}',
+            '${dadosFilme.data_lancamento}',
+            '${dadosFilme.data_relancamento}',
+            '${dadosFilme.duracao}',
+            '${dadosFilme.foto_capa}',
+            '${dadosFilme.valor_unitario}'
+        )`;
         }
+       
+        // Executa o script SQL no banco de dados | Devemos usar execute e não query!
+        // Execute deve ser utilizado para insert, update e delete, onde o banco não devolve dados
 
-        console.log(sql)
+        let result = await prisma.$executeRawUnsafe(sql);
 
-        // Executa o scriptSQL no banco de dados (devemos usar o comando execute e não o querry)
-        // O comando execute deve ser utilizado para insert, update e delete 
-        let result = await prisma.$executeRawUnsafe(sql)
+        // Validação para verificar se o insert funcionou no banco de dados
 
-        // Validação para verificar se o insert funcionou no banco de dados 
-        if (result)
-            return true
+        if(result )
+            return true;
         else
-            return false
+            return false;
 
     } catch (error) {
-        return false
+        return false;
+        
     }
 }
 
-// Atualizar um Filme existente filtrando pelo ID
-const updateFilme = async function (id) {
+
+//funcao para atualizar um filme no banco de dados
+const updateFilme = async function(){
 
 }
 
-// Excluir um Filme existente filtrando pelo ID
-const deleteFilme = async function (id) {
+//função para excluir um filme no banco de dodos
+const deleteFilme = async function (){
 
 }
 
-// Listar todos os filmes existentes 
-const selectAllFilmes = async function () {
-
-    // Script SQL para listar todos os registros
-    let sql = 'select * from tbl_filme order by id desc'
-
-    // Executa o scriptSQL no BD e recebe o retorno dos daods na variável rsFilmes
-    let rsFilmes = await prisma.$queryRawUnsafe(sql)
-
-    // Tratamento de erro para retornar os dados ou retornar false
-    if (rsFilmes.length > 0)
-        return rsFilmes
-    else
-        return false
-
-}
-
-// Buscar o filme existente filtrando pelo ID
-const selectByIdFilme = async function (id) {
+const selectIdFilme = async function (){
     try {
-        // Realiza a busca do Filme pelo ID
-        let sql = `select * from tbl_filme where id = ${id}`;
-
-        // Executa no Banco de Dados o script SQL
-        let rsFilme = await prisma.$queryRawUnsafe(sql);
-
-        return rsFilme;
-    } catch (error) {
-
+        let sql = `select CAST(last_insert_id() as DECIMAL) as id from tbl_filme limit 1`
+    
+        let filmeId = await prisma.$queryRawUnsafe(sql)
+         return filmeId
+        } catch (error) {
+            return false
+            
+        }   
     }
-};
+    
+//função para listar todos os filmes do banco de dados
+const selectAllFilmes = async function(){
+    try {
 
+        let sql = 'select * from tbl_filme';
+        //Executa o script SQL no BD e recebe o retorno dos dados
+    let rsFilmes = await prisma.$queryRawUnsafe(sql);
+    
+    return rsFilmes;
+    } catch (error) {
+        return false;
+    }
+ 
+}
+  
+
+const selectByNome = async function (nome){
+ 
+    try {
+
+    let sql = `select * from tbl_filme where nome LIKE "%${nome}%"`
+    let rsFilmes = await prisma.$queryRawUnsafe(sql);
+
+        return rsFilmes;
+    } catch (error) {
+        return false
+    }
+    
+}
+
+// função para buscar um filme no banco de dados filtrando pelo id 
+const selectByIdFilme = async function (id){
+
+    try {
+        
+    //script sql para filtrar pelo id
+    let sql = `select * from tbl_filme where id = ${id}`;
+    //executa o sql no banco de dados
+    let rsFilme = await prisma.$queryRawUnsafe(sql);
+
+    return rsFilme;
+
+    } catch (error) {
+        return false
+    }
+}    
 
 
 module.exports = {
@@ -126,5 +148,7 @@ module.exports = {
     updateFilme,
     deleteFilme,
     selectAllFilmes,
-    selectByIdFilme
+    selectByIdFilme,
+    selectByNome,
+    selectIdFilme
 }
