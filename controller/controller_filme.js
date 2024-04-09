@@ -90,6 +90,71 @@ const setInserirNovoFilme = async function (dadosFilme, contentType) {
 
 //função para validar e atualizar um filme
 const setAtualizarFilme = async function (id, dadosFilme, contentType) {
+    try{
+        let idFilme = id;
+
+        if(idFilme == '' || idFilme == undefined || isNaN (idFilme)){
+            return message.ERROR_INVALID_ID
+            
+        }else{
+
+        if(String(contentType).toLowerCase() == 'application/json'){
+            let updateFilmeJson = {};
+            
+            if(dadosFilme.nome == ''                      || dadosFilme.nome == undefined               ||  dadosFilme.nome == null               || dadosFilme.nome.length > 80             || 
+            dadosFilme.sinopse == ''                  || dadosFilme.sinopse == undefined            ||  dadosFilme.sinopse == null            || dadosFilme.sinopse.length > 65000       ||
+            dadosFilme.duracao == ''                  || dadosFilme.duracao == undefined            ||  dadosFilme.duracao ==  null           || dadosFilme.duracao.length > 8           ||
+            dadosFilme.data_lancamento == ''          || dadosFilme.data_lancamento == undefined    ||  dadosFilme.data_lancamento == null    || dadosFilme.data_lancamento.length != 10 ||
+            dadosFilme.foto_capa == ''                || dadosFilme.foto_capa == undefined          ||  dadosFilme.foto_capa ==  null         || dadosFilme.foto_capa.length > 200       ||
+            dadosFilme.valor_unitario.length > 6      
+        ){
+            return message.ERROR_REQUIRED_FIELDS
+        } else {
+            let validateStatus = false;
+
+            if (dadosFilme.data_relancamento != null &&
+                dadosFilme.data_relancamento != '' &&
+                dadosFilme.data_relancamento != undefined){
+
+                if (dadosFilme.data_relancamento.length != 10){
+                    return message.ERROR_REQUIRED_FIELDS;
+                }else{
+                    validateStatus = true;
+                }
+            } else {
+                validateStatus = true 
+            }
+
+            let filmeById = await filmeDAO.selectByIdFilme(id)
+            if(filmeById.length > 0){
+                if (validateStatus){
+                    let uptadeFilme = await filmeDAO.updateFilme(id,dadosFilme);
+    
+                    if(uptadeFilme){
+                      
+                        updateFilmeJson.filme = dadosFilme
+                        updateFilmeJson.status = message.SUCESS_UPTADE_ITEM.status
+                        updateFilmeJson.status_code = message.SUCESS_UPTADE_ITEM.status_code
+                        updateFilmeJson.message = message.SUCESS_UPTADE_ITEM.message
+    
+                        return updateFilmeJson;
+                    } else {
+                         return message.ERROR_INTERNAL_SERVER_DB
+                    }
+                }
+            }else{
+                return message.ERROR_NOT_FOUND
+            }
+        }
+        } else {
+            return message.ERROR_CONTENT_TYPE
+        }
+        }
+
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER
+    }
+
 }
 
 
