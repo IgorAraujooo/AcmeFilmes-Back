@@ -27,6 +27,7 @@ const insertFilme = async function(dadosFilme) {
                 '${dadosFilme.duracao}',
                 '${dadosFilme.foto_capa}',
                 '${dadosFilme.valor_unitario}'
+                '${dadosFilme.valor_u}'
             )`;
 
         }else{

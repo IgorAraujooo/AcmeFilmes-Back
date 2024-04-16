@@ -38,6 +38,7 @@ app.use((request,response,next) =>{
 
     // Import dos arquivos da controller do projeto 
     const controllerFilmes = require ('./controller/controller_filme.js');
+    const controllerGenero = require ('./controller/controller_genero.js')
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -127,6 +128,19 @@ app.put('/v1/acmefilmes/updateFilme/:id', cors(), bodyParserJson, async function
 
     
 } )
+
+app.get('/v2/acmefilmes/genero', cors(), bodyParserJson, async function (request, response, next){
+
+    let dadosGenero = await controllerGenero.getListarFilmes()
+
+    if(dadosFilme){
+        response.json(dadosGenero)
+        response.status(200)
+    } else {
+        response.json({message: 'Nenhum registro foi encontrado'})
+        response.status(404)
+    }
+})
 
 app.listen('8080', function(){
     console.log('API funcionando e aguardando requisições')
