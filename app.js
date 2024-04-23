@@ -38,7 +38,8 @@ app.use((request,response,next) =>{
 
     // Import dos arquivos da controller do projeto 
     const controllerFilmes = require ('./controller/controller_filme.js');
-    const controllerGenero = require ('./controller/controller_genero.js')
+    const controllerAtores = require ('./controller/controller_atores.js')
+    const controllerDiretores = require ('./controller/controller_diretores.js')
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -129,18 +130,74 @@ app.put('/v1/acmefilmes/updateFilme/:id', cors(), bodyParserJson, async function
     
 } )
 
-app.get('/v2/acmefilmes/genero', cors(), bodyParserJson, async function (request, response, next){
+app.post('/v2/acmefilmes/ator',  cors(), bodyParserJson, async (request, response, next) =>{
 
-    let dadosGenero = await controllerGenero.getListarFilmes()
+    let contentType = request.headers['content-type']
 
-    if(dadosFilme){
-        response.json(dadosGenero)
+    //Recebe os dados encaminhados no Body da requisição
+    let dadosBody = request.body
+
+    //Encaminha os dados para cotroller inserir no BD
+    let resultDados = await controllerAtores.setInserirNovoAtor(dadosBody, contentType)
+
+    response.status(resultDados.status_code)
+    response.json(resultDados)
+
+})
+
+app.get('/v2/acmefilmes/atores', cors(), async (request, response, next) => {
+
+    //Chama a função para retornar os dados de FIlme
+    let dadosAtores = await controllerAtores.getListarAtores()
+
+    //Validação para retornar os dados ou o erro 404
+    if (dadosAtores) {
+        response.json(dadosAtores)
         response.status(200)
     } else {
-        response.json({message: 'Nenhum registro foi encontrado'})
+        response.json({ message: 'Nenhum resgistro encontrado' })
         response.status(404)
     }
+
 })
+
+app.get('/v2/acmefilmes/ator/:id', cors(), async (request, response, next) => {
+  
+    //Recebe o ID encaminhando a requisição
+    let idAtor = request.params.id
+
+    let dadosAtor = await controllerAtores.getBuscarAtor(idAtor)
+
+    response.status(dadosAtor.status_code)
+    response.json(dadosAtor)
+})
+
+app.delete('/v2/acmefilmes/ator/:id',  cors(), bodyParserJson, async (request, response, next) => {
+   
+    let idAtor = request.params.id
+    let dadosAtor = await controllerAtores.setExcluirAtor(idAtor)
+
+    response.status(dadosAtor.status_code)
+    response.json(dadosAtor)
+})
+
+app.put ('/v2/acmefilmes/ator/:id',  cors(), bodyParserJson, async (request, response, next) => {
+
+    let idAtor = request.params.id
+
+    let contentType = request.headers['content-type']
+
+    //Recebe os dados encaminhados no Body da requisição
+    let dadosBody = request.body
+
+    //Encaminha os dados para cotroller inserir no BD
+    let resultDados = await controllerAtores.setAtualizarAtor(dadosBody, contentType, idAtor)
+
+    response.status(resultDados.status_code)
+    response.json(resultDados)
+
+})
+
 
 app.listen('8080', function(){
     console.log('API funcionando e aguardando requisições')
