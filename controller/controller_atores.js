@@ -152,9 +152,7 @@ const setExcluirAtor = async (id) => {
     try {
 
         let idAtor = id
-
-        let validaAtor = await selectByIdAtor(idAtor)
-
+        let validaAtor = await atoresDAO.selectByIdAtor(idAtor)
         let dadosAtor = await atoresDAO.deleteAtor(idAtor)
 
         if (idAtor == '' || idAtor == undefined || isNaN(idAtor)) {

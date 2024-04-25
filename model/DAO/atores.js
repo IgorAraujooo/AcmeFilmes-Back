@@ -138,7 +138,7 @@ const deleteAtor = async (id) => {
 const selectByIdAtor = async (id) => {
     try {
         // Realiza a busca do ator pelo ID
-        let sql = `select * from tbl_atores where id = ${id}`;
+        let sql = `select * from tbl_ator where id = ${id}`;
     
         // Executa no banco de dados o script sql
         let rsAtores = await prisma.$queryRawUnsafe(sql);
@@ -153,7 +153,7 @@ const selectByIdAtor = async (id) => {
 
 const selectAllAtores = async () => {
     // Script sql para listar todos os registros
-    let sql = 'select * from tbl_atores order by id desc';
+    let sql = 'select * from tbl_ator order by id desc';
 
     // $queryRawUnsafe(sql)  = Encaminha apenas a variável
     // $queryRaw('select * from tbl_atores) = Encaminha o script do banco 

@@ -39,7 +39,6 @@ app.use((request,response,next) =>{
     // Import dos arquivos da controller do projeto 
     const controllerFilmes = require ('./controller/controller_filme.js');
     const controllerAtores = require ('./controller/controller_atores.js')
-    const controllerDiretores = require ('./controller/controller_diretores.js')
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

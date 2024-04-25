@@ -10,7 +10,7 @@ datasource db {
 model tbl_ator {
   id                     Int                      @id @default(autoincrement())
   nome                   String                   @db.VarChar(100)
-  nome_artistico         String?                  @db.VarChar(100)
+  nome_artistico         String                   @db.VarChar(100)
   foto                   String                   @db.VarChar(150)
   data_nascimento        DateTime                 @db.Date
   data_falecimento       DateTime?                @db.Date
