@@ -258,8 +258,6 @@ app.get('/v2/acmefilmes/buscarGenero/:id', cors(), async(request, response, next
 
 // EndPoints Classificação
 
-const controller_classificacao = require('./controller/controller_classificacao.js')
-
 app.get('/v2/acmefilmes/classificacao', cors(), async(request, response, next) => {
 
     let dadosClassificacao = await controller_classificacao.getListarClassificacao()
