@@ -214,7 +214,7 @@ app.get('/v2/acmefilmes/generos', cors(), async(request, response, next) => {
     } else response.json({ message: "nenhum registro encontrado" }), response.status(404)
 })
 
-app.post('/v2/acmefilmes/inserirGenero', cors(), bodyParserJSON, async(request, response, next) => {
+app.post('/v2/acmefilmes/inserirGenero', cors(), bodyParserJson, async(request, response, next) => {
 
     let contentType = request.headers['content-type']
 
@@ -226,7 +226,7 @@ app.post('/v2/acmefilmes/inserirGenero', cors(), bodyParserJSON, async(request, 
     response.json(resultDados)
 })
 
-app.put('/v2/acmefilmes/atualizarGenero/:id', cors(), bodyParserJSON, async(request, response, next) => {
+app.put('/v2/acmefilmes/atualizarGenero/:id', cors(), bodyParserJson, async(request, response, next) => {
     const id = request.params.id
 
     let contentType = request.headers['content-type']
@@ -268,18 +268,19 @@ app.get('/v2/acmefilmes/classificacao', cors(), async(request, response, next) =
     } else response.json({ message: "nenhum registro encontrado" }), response.status(404)
 })
 
-app.post('/v2/acmefilmes/inserirClassificacao', cors(), bodyParserJSON, async(request, response, next) => {
+app.post('/v2/acmefilmes/inserirClassificacao', cors(), bodyParserJson, async(request, response, next) => {
     let contentType = request.headers['content-type']
 
     let dadosBody = request.body
 
     let resultDados = await controller_classificacao.setNovaClassificacao(dadosBody, contentType)
-
-    response.status(resultDados.status_code)
+console.log(resultDados)
+    // console.log(status_code)
+    // response.status(resultDados.status_code)
     response.json(resultDados)
 })
 
-app.put('/v2/acmefilmes/atualizarGenero/:id', cors(), bodyParserJSON, async(request, response, next) => {
+app.put('/v2/acmefilmes/atualizarGenero/:id', cors(), bodyParserJson, async(request, response, next) => {
     const id = request.params.id
 
     let contentType = request.headers['content-type']

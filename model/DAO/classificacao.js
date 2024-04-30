@@ -9,12 +9,12 @@ const insertClassificacao = async function(dadosCategoria) {
                                                     nome, 
                                                     sigla, 
                                                     descricao, 
-                                                    icon
+                                                    icone
         ) values(
                     '${dadosCategoria.nome}',
                     '${dadosCategoria.sigla}',
                     '${dadosCategoria.descricao}',
-                    '${dadosCategoria.icon}'
+                    '${dadosCategoria.icone}'
         );`
 
         let result = await prisma.$executeRawUnsafe(sql)

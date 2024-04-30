@@ -7,6 +7,9 @@ const message = require('../modulo/config.js')
 // Função para inserir um novo diretor
 const setInserirNovoDiretor = async (dadosDiretor, contentType) => {
     try {
+
+        // console.log(contentType)
+
         if (String(contentType).toLowerCase() == 'application/json') {
             let statusValidated = false
             let novoDiretorJSON = {}

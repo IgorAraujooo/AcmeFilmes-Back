@@ -159,7 +159,7 @@ const selectAllDiretores = async () => {
     // $queryRaw('select * from tbl_diretores) = Encaminha o script do banco 
 
     // Executa o script no banco de dados e recebe o retorno dos dados da variavel rsAtores
-    let rsAtores = await prisma.$queryRawUnsafe(sql)
+    let rsDiretores = await prisma.$queryRawUnsafe(sql)
      // Para usar await a função necessita ser async(async function)
 
     // Tratamento de erro para retornar dados ou retornar false

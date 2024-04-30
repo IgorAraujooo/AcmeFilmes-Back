@@ -14,7 +14,7 @@ const setNovaClassificacao = async function(novosDados, content) {
             ) {
                 return ERROR_Messages.ERROR_REQUIRED_FIELDS
             } else {
-                if (novosDados.icon != '' && novosDados.icon != null && novosDados.icon != undefined) {
+                if (novosDados.icone != '' && novosDados.icone != null && novosDados.icone != undefined) {
                     statusValidate = true
                 }
             }
