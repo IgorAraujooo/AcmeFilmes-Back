@@ -1,0 +1,28 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-image: url('../img/fundo.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.custom-h{
+    height: 3.8vw;
+}
+
+.custom-w-25{
+    width: 6vw;
+}
+
+.custom-w-nome{
+    width: 30vw;
+}
+
+.fundo_transparente{
+    background-color: rgba(0, 0, 0, 0.8);
+}

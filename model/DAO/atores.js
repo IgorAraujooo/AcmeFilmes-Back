@@ -66,6 +66,7 @@ const insertAtor = async (dadosAtor) => {
 const updateAtor = async (idAtor, dadosAtor) => {
     let sql
     try {
+        console.log(dadosAtor)
         // Validação para verificar se a data de relançamento é vazia, pois devemos ajustar o script SQL para o BD
         if (dadosAtor.data_falecimento == null ||
             dadosAtor.data_falecimento == undefined ||
@@ -186,7 +187,29 @@ const selectId = async () => {
     }
 }
 
+const selectAtoresFilmeById = async function(id){
+
+    try {
+        
+        let sql = `SELECT tbl_ator.id, tbl_ator.nome
+        FROM tbl_ator
+        JOIN tbl_filme_ator ON tbl_ator.id = tbl_filme_ator.id_ator
+        WHERE tbl_filme_ator.id_filme = ${id};`
+
+        let result = await prisma.$queryRawUnsafe(sql)
+
+        if(result){
+            return result
+        } else {
+            return false
+        }
+    } catch (error) {
+        
+    }
+}
+
 module.exports = {
+    selectAtoresFilmeById,
     insertAtor,
     updateAtor,
     deleteAtor,

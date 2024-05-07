@@ -1,5 +1,5 @@
 const generosDAO = require('../model/DAO/genero.js')
-const ERROR_Messages = require('../modulo/config.js')
+const message = require('../modulo/config.js')
 
 const setNovoGenero = async function(novosDados, content) {
 
@@ -35,34 +35,62 @@ const setNovoGenero = async function(novosDados, content) {
     }
 }
 
-const setAtualizarGenero = async function(id, novosDados, content) {
-    try {
-        console.log("oi")
-        if (String(content).toLowerCase() !== 'application/json') {
-            return ERROR_Messages.ERROR_INVALID_FORMAT
-        } else {
-            console.log(novosDados)
-            if (novosDados.nome == '' || novosDados.nome == undefined || novosDados.nome == null || novosDados.nome.length > 45) {
-                return ERROR_Messages.ERROR_REQUIRED_FIELDS
-            } else {
-                const generoAtualizado = await generosDAO.updateGenero(id, novosDados)
+const setAtualizarGenero = async function(id, contentType, dadosGenero){
+    try{
+        let idGenero = id;
+        // console.log(dadosGenero)
 
-                if (generoAtualizado) {
-                    let setNovoGeneroJson = {
-                        status: ERROR_Messages.SUCCESS_UPDATED_ITEM,
-                        novosDados: novosDados,
-                        id: id
+        if(idGenero == '' || idGenero == undefined || isNaN (idGenero)){
+            return message.ERROR_INVALID_ID;
+
+           
+            
+        }else{
+
+        if(String(contentType).toLowerCase() == 'application/json'){
+            let updateGeneroJson = {};
+            
+            if(dadosGenero.nome == ''    || dadosGenero.nome == undefined       ||  dadosGenero.nome == null               || dadosGenero.nome.length > 45
+    ){
+            return message.ERROR_REQUIRED_FIELDS
+        } else {
+
+            let validateStatus = true;
+
+            let generoById = await generosDAO.selectGeneroByID(id)
+
+            if(generoById.length > 0){
+                if (validateStatus){
+                    // console.log("aaaaaaaaaaaa")
+                    let updateGenero = await generosDAO.updateGenero(id,dadosGenero);
+    
+                    if(updateGenero){
+                      
+                        updateGeneroJson.genero = dadosGenero
+                        updateGeneroJson.status = message.SUCCESS_UPDATED_ITEM.status
+                        updateGeneroJson.status_code = message.SUCCESS_UPDATED_ITEM.status_code
+                        updateGeneroJson.message = message.SUCCESS_UPDATED_ITEM.message
+    
+                        return updateGeneroJson;
+                    } else {
+                         return message.ERROR_INTERNAL_SERVER_DB
                     }
-                    return setNovoGeneroJson
-                } else {
-                    return ERROR_Messages.ERROR_INTERNAL_SERVER_DB
                 }
+            }else{
+                return message.ERROR_NOT_FOUND
             }
         }
+        } else {
+            return message.ERROR_CONTENT_TYPE
+        }
+        }
+
     } catch (error) {
-        return ERROR_Messages.ERROR_UPDATE_ITEM
+        console.log(error)
+        return message.ERROR_INTERNAL_SERVER
     }
 }
+
 
 const setExcluirGenero = async function(id) {
     try {

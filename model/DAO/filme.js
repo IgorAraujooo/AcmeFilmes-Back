@@ -82,7 +82,7 @@ const updateFilme = async function(id,dadosFilme){
             dadosFilme.data_relancamento != undefined
         ){
 
-            sql = `UPDATE tbl_filme SET nome = '${dadosFilme.nome}',
+            sql = `UPDATE tbl_filme SET titulo = '${dadosFilme.nome}',
                 sinopse = '${dadosFilme.sinopse}',
                 duracao = '${dadosFilme.duracao}',
                 data_lancamento = '${dadosFilme.data_lancamento}',
@@ -91,7 +91,7 @@ const updateFilme = async function(id,dadosFilme){
                 valor_unitario  = '${dadosFilme.valor_unitario}' 
                 where tbl_filme.id = ${id}; `
         } else {
-             sql = `UPDATE tbl_filme SET  nome = '${dadosFilme.nome}',
+             sql = `UPDATE tbl_filme SET  titulo = '${dadosFilme.nome}',
                 sinopse = '${dadosFilme.sinopse}',
                 duracao = '${dadosFilme.duracao}',
                 data_lancamento = '${dadosFilme.data_lancamento}',
@@ -100,7 +100,7 @@ const updateFilme = async function(id,dadosFilme){
                 valor_unitario  = '${dadosFilme.valor_unitario}' 
                  where tbl_filme.id = ${id}; `
         }
-
+        console.log(sql)
         let result = await prisma.$executeRawUnsafe(sql);
 
         if (result)

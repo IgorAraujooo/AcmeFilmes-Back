@@ -3,7 +3,7 @@ const { ERROR_INTERNAL_SERVER_DB } = require('../../modulo/config')
 
 const prisma = new PrismaClient()
 
-const insertGenero = async function(dadosGenero) {
+const insertGenero = async function (dadosGenero) {
 
     try {
 
@@ -20,7 +20,7 @@ const insertGenero = async function(dadosGenero) {
     }
 }
 
-const getId = async function() {
+const getId = async function () {
     try {
         const sqlGet = 'select cast(id as decimal) as id from tbl_genero order by id desc limit 1'
 
@@ -36,23 +36,23 @@ const getId = async function() {
     }
 }
 
-const updateGenero = async function(id, novoNome) {
+const updateGenero = async function (id, dadosGenero) {
+
+
     try {
-        let sql = `update tbl_genero set nome = '${novoNome}' where id = ${id}`
-
-        let result = await prisma.$executeRawUnsafe(sql)
-
-        if (result) {
+        let sql = `update tbl_genero set nome = '${dadosGenero.nome}' where id = ${id}`
+        let resultStatus = await prisma.$executeRawUnsafe(sql)
+        if (resultStatus)
             return true
-        } else {
+        else
             return false
-        }
     } catch (error) {
         return false
     }
+
 }
 
-const deleteGenero = async function(id) {
+const deleteGenero = async function (id) {
     const id_genero = id
 
     try {
@@ -70,7 +70,7 @@ const deleteGenero = async function(id) {
     }
 }
 
-const selectAllGenero = async function() {
+const selectAllGenero = async function () {
     try {
         let sql = 'select * from tbl_genero'
 
@@ -86,7 +86,7 @@ const selectAllGenero = async function() {
     }
 }
 
-const selectGeneroByID = async function(id) {
+const selectGeneroByID = async function (id) {
     try {
         let sql = `select * from tbl_genero where id=${id}`
 

@@ -44,30 +44,30 @@ const getId = async function() {
     }
 }
 
-const updateClassificacao = async function(id, novosDados) {
-    try {
-        let sql = `update tbl_classificacao set`
+const updateClassificacao =  async function(id, dadosClassificacao) {
+    
+    try{
+        let sql;
 
-        const keys = Object.keys(novosDados)
+            sql = `UPDATE tbl_classificacao SET nome = '${dadosClassificacao.nome}',
+                descricao = '${dadosClassificacao.descricao}',
+                sigla = '${dadosClassificacao.sigla}',
+                icone = '${dadosClassificacao.icone}'
+                where id = ${id}`
+        
+                 console.log(sql);
 
-        keys.forEach((key, index) => {
-            sql += `${key} = '${novosDados[key]}'`
-            if (index !== keys.length - 1) {
-                sql += `, `
-            }
-        })
+        let result = await prisma.$executeRawUnsafe(sql);
+        
 
-        sql += `where id = ${id}`
-
-        let result = await prisma.$executeRawUnsafe(sql)
-
-        if (result) {
-            return true
-        } else {
-            return false
-        }
+        if (result)
+            return result
+        else
+            return false;
+        
     } catch (error) {
         return false
+
     }
 }
 

@@ -114,8 +114,13 @@ app.delete('/v1/acmefilmes/deleteFilme/:id', cors (), async function (request,re
 
     let dadosFilme = await controllerFilmes.setExcluirFilme(idFilme);
 
-    response.status(dadosFilme.status_code);
-    response.json(dadosFilme);
+    if(dadosFilme){
+        response.status(200)
+        response.json(dadosFilme)
+    } else {
+        response.status(404)
+        response.json({message: 'eroo'})
+    }
 })
 
 app.put('/v1/acmefilmes/updateFilme/:id', cors(), bodyParserJson, async function(request,response,next){
@@ -124,7 +129,7 @@ app.put('/v1/acmefilmes/updateFilme/:id', cors(), bodyParserJson, async function
     let contentType = request.headers['content-type'];
     let dadosBody = request.body
 
-    let resultUpdateFilme = await controllerFilmes.setAtualizarFilme(idFilme, dadosBody, contentType);
+    let resultUpdateFilme = await controllerFilmes.setAtualizarFilme(idFilme, contentType, dadosBody);
 
     response.status(resultUpdateFilme.status_code)
     response.json(resultUpdateFilme)
@@ -195,7 +200,7 @@ app.put ('/v2/acmefilmes/ator/:id',  cors(), bodyParserJson, async (request, res
     let dadosBody = request.body
 
     //Encaminha os dados para cotroller inserir no BD
-    let resultDados = await controllerAtores.setAtualizarAtor(dadosBody, contentType, idAtor)
+    let resultDados = await controllerAtores.setAtualizarAtor(idAtor, contentType, dadosBody)
 
     response.status(resultDados.status_code)
     response.json(resultDados)
@@ -226,17 +231,16 @@ app.post('/v2/acmefilmes/inserirGenero', cors(), bodyParserJson, async(request, 
     response.json(resultDados)
 })
 
-app.put('/v2/acmefilmes/atualizarGenero/:id', cors(), bodyParserJson, async(request, response, next) => {
-    const id = request.params.id
-
+app.put('/v2/acmefilmes/generos/:id', cors(), bodyParserJson, async function(request,response, next){
+    let idGeneros = request.params.id
     let contentType = request.headers['content-type']
-    let novosDados = request.body
+    let dadosBody = request.body
 
-    let resultDados = await controller_genero.setAtualizarGenero(id, novosDados, contentType)
+    let dadosGenero = await controller_genero.setAtualizarGenero(idGeneros, contentType, dadosBody);
 
-    response.status(resultDados.status_code)
-    response.json(resultDados)
-})
+    response.status(dadosGenero.status_code);
+    response.json(dadosGenero);
+});
 
 app.delete('/v2/acmefilmes/deletarGenero/:id', cors(), async(request, response, next) => {
     const id = request.params.id
@@ -280,17 +284,16 @@ console.log(resultDados)
     response.json(resultDados)
 })
 
-app.put('/v2/acmefilmes/atualizarGenero/:id', cors(), bodyParserJson, async(request, response, next) => {
-    const id = request.params.id
-
+app.put('/v2/acmefilmes/updateclassificacao/:id', cors(), bodyParserJson, async function(request,response, next){
+    let idClassificacao = request.params.id;
     let contentType = request.headers['content-type']
-    let novosDados = request.body
+    let dadosBody = request.body
 
-    let resultDados = await controller_classificacao.setAtualizarClassificacao(id, novosDados, contentType)
+    let dadosClassificacao = await controller_classificacao.setAtualizarClassificacao(idClassificacao, contentType, dadosBody);
 
-    response.status(resultDados.status_code)
-    response.json(resultDados)
-})
+    response.status(dadosClassificacao.status_code);
+    response.json(dadosClassificacao);
+});
 
 app.delete('/v2/acmefilmes/deletarClassificacao/:id', cors(), async(request, response, next) => {
     const id = request.params.id

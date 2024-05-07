@@ -15,7 +15,7 @@ const classificacaoDAO = require('../model/DAO/classificacao.js');
 
 const generoDAO = require('../model/DAO/genero.js')
 
-const controllerAtor = require('./controller_atores.js')
+const atorDAO = require('../model/DAO/atores.js')
  
 // Função para inserir um novo filme no banco de dados
 const setInserirNovoFilme = async function(dadosFilme, contentType){
@@ -105,6 +105,7 @@ const setInserirNovoFilme = async function(dadosFilme, contentType){
 
 // Função para atualizar um filme existente
 const setAtualizarFilme = async function(id, contentType, dadosFilme){
+    console.log(dadosFilme)
     try{
         let idFilme = id;
 
@@ -124,10 +125,7 @@ const setAtualizarFilme = async function(id, contentType, dadosFilme){
            dadosFilme.duracao == ''            || dadosFilme.duracao == undefined           || dadosFilme.duracao.length > 8             || 
            dadosFilme.data_lancamento == ''    || dadosFilme.data_lancamento == undefined   || dadosFilme.data_lancamento.length > 10    || 
            dadosFilme.foto_capa == ''          || dadosFilme.foto_capa == undefined         || dadosFilme.foto_capa.length > 200         ||
-           dadosFilme.valor_unitario.length > 8  ||
-           dadosFilme.tbl_classificacao_id == '' || dadosFilme.tbl_classificacao_id == undefined || dadosFilme.tbl_classificacao_id == null  || 
-           dadosFilme.tbl_ator_filme_id == '' || dadosFilme.tbl_ator_filme_id == undefined || dadosFilme.tbl_ator_filme_id == null   ||
-           dadosFilme.tbl_genero_id == '' || dadosFilme.tbl_genero_id == undefined || dadosFilme.tbl_genero_id == null 
+           dadosFilme.valor_unitario.length > 8  
        ){
 
             return message.ERROR_REQUIRED_FIELDS
@@ -145,9 +143,9 @@ const setAtualizarFilme = async function(id, contentType, dadosFilme){
                     if(updateFilme){
                       
                         updateFilmeJson.filme = dadosFilme
-                        updateFilmeJson.status = message.SUCESS_UPDATED_ITEM.status
-                        updateFilmeJson.status_code = message.SUCESS_UPDATED_ITEM.status_code
-                        updateFilmeJson.message = message.SUCESS_UPDATED_ITEM.message
+                        updateFilmeJson.status = message.SUCCESS_UPDATED_ITEM.status
+                        updateFilmeJson.status_code = message.SUCCESS_UPDATED_ITEM.status_code
+                        updateFilmeJson.message = message.SUCCESS_UPDATED_ITEM.message
     
                         return updateFilmeJson;
                     } else {
@@ -225,9 +223,9 @@ const getListarFilmes = async function(){
     // Verifica se existem dados retornados do DAO
     if(dadosFilmes){
         for (let filme of dadosFilmes){
-            filme.genero = await generoDAO.selectGeneroById(filme.tbl_genero_id)
-            filme.classificacao = await classificacaoDAO.selectClassficationsById(filme.tbl_classificacao_id)
-            filme.atores = await controllerAtor.getListarAtoresById(filme.tbl_ator_filme_id)
+            filme.genero = await generoDAO.selectGeneroByID(filme.tbl_genero_id)
+            filme.classificacao = await classificacaoDAO.selectClassificacaoByID(filme.tbl_classificacao_id)
+            filme.atores = await atorDAO.selectAtoresFilmeById(filme.tbl_ator_filme_id)
             delete filme.tbl_classificacao_id
             delete filme.tbl_ator_filme_id
             delete filme.tbl_genero_id
